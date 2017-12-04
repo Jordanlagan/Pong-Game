@@ -40,7 +40,7 @@ var render = function() {
 
 // Animate
 var step = function() {
-    render();
 }
 
-var animate = window.requestAnimationFrame || function(step) { window.setTimeout(step, 1000/60) };
+var animate = function() {
+}
