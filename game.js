@@ -1,5 +1,12 @@
 // Initialize
 
+var canvas = document.getElementById('room0');
+var width = 640;
+var height = 480;
+canvas.width = width;
+canvas.height = height;
+var context = canvas.getContext("2d");
+
 function Paddle(x, y, width = 10, height = 35) {
     this.x = x,
     this.y = y,
@@ -14,16 +21,15 @@ function Ball(x, y, radius) {
     this.radius = radius
 }
 
-var canvas = document.getElementById("room0");
-var context = canvas.getContext("2d");
-
 Ball.prototype.render = function() {
     context.beginPath();
     context.arc(this.x, this.y, this.radius, 0, 2*Math.PI);
+    context.fillStyle = "#000000";
     context.fill();
 }
 
 Paddle.prototype.render = function() {
+    context.fillStyle = "#dddddd";
     context.fillRect(this.x, this.y, this.width, this.height);
 }
 
@@ -31,24 +37,40 @@ Paddle.prototype.move = function(change) {
     this.y += change;
 }
 
-Paddle.prototype.update = function() {
+function Player() {
+    this.paddle = new Paddle(5, 225);
+}
+
+function Computer() {
+    this.paddle = new Paddle(625, 225);
+}
+
+Player.prototype.render = function() {
+    this.paddle.render();
+}
+
+Player.prototype.update = function() {
     for (var key in keystate) {
         var val = Number(key);
         if (val === 38) {
-            if (player.y >= 5) {
-                player.move(-player.speed);
+            if (this.paddle.y >= 5) {
+                this.paddle.move(-this.paddle.speed);
             }
         }
         if (val === 40) {
-            if (player.y <= 475) {
-                player.move(player.speed);
+            if (this.paddle.y <= 475) {
+                this.paddle.move(this.paddle.speed);
             }
         }
     }
 }
 
-var player = new Paddle(5, 225);
-var computer = new Paddle(625, 225);
+Computer.prototype.render = function() {
+    this.paddle.render();
+}
+
+var player = new Player();
+var computer = new Computer();
 var ball = new Ball(320, 240, 5);
 
 // Controls
@@ -63,24 +85,25 @@ window.addEventListener('keyup', function(event) {
     delete keystate[event.keyCode];
 });
 
-// Render
+// Render & Animate
 
 var render = function() {
+    context.fillStyle = "#4a4a4A";
+    context.fillRect(0, 0, 640, 480);
     player.render();
     computer.render();
     ball.render();
 }
 
-// Animate
-var update = function() {
-    player.update();
-}
-
 var step = function() {
     update();
     render();
-    console.log(player.y);
+    console.log(player.paddle.y);
     animate(step);
+}
+
+var update = function() {
+    player.update();
 }
 
 var animate = window.requestAnimationFrame ||
