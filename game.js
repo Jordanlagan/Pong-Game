@@ -15,10 +15,12 @@ function Paddle(x, y, width = 10, height = 35) {
     this.speed = 5;
 }
 
-function Ball(x, y, radius) {
+function Ball(x, y, radius, x_speed, y_speed) {
     this.x = x,
     this.y = y,
-    this.radius = radius
+    this.radius = radius,
+    this.x_speed = x_speed,
+    this.y_speed = y_speed
 }
 
 Ball.prototype.render = function() {
@@ -65,13 +67,20 @@ Player.prototype.update = function() {
     }
 }
 
+Ball.prototype.update = function() {
+    this.x += this.x_speed;
+    this.y += this.y_speed;
+}
+
 Computer.prototype.render = function() {
     this.paddle.render();
 }
 
 var player = new Player();
 var computer = new Computer();
-var ball = new Ball(320, 240, 5);
+var ball = new Ball(320, 240, 7, Math.floor(Math.random() * -5 + Math.random() * 5), Math.floor(Math.random() * -5 + Math.random() * 5));
+console.log(ball.x_speed);
+console.log(ball.y_speed);
 
 // Controls
 
@@ -98,12 +107,12 @@ var render = function() {
 var step = function() {
     update();
     render();
-    console.log(player.paddle.y);
     animate(step);
 }
 
 var update = function() {
     player.update();
+    ball.update();
 }
 
 var animate = window.requestAnimationFrame ||
